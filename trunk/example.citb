@@ -1,0 +1,63 @@
+# 包的名称
+Name: tpm_create_test
+# 包的版本信息
+Version: 1.0.0
+# 释放版本号
+Release: 1
+# 依赖包
+Requires: php , httpd
+# 创建者
+Packager: guangzhao
+# 摘要信息
+Summary: by guangzhao test
+# 版权
+copyright: taobao
+# 指定包目标环境平台
+Architecture: noarch
+
+PEARPATH=/usr/lib/php/pear/tbs/apps/customhtml
+HTDOCSPATH=/var/www/htdocs/apps/customhtml
+TPMCREATE=/var/tpm/create/
+ 
+# 安装脚本开始命令,以下部分可以从和Makefile中的内容相同即可
+install:
+	mkdir -p $(PEARPATH)
+	mkdir -p $(HTDOCSPATH)
+	cp -r ../../src/htdocs/*.php $(PEARPATH)/customhtml
+	cp -r ../../src/pear/*.php $($HTDOCSPATH)/customhtml
+
+# 以下shell命令，要以TAB开始每一行
+pre:
+# 每行命令以TAB开始,安装包前执行命令
+#	sudo apachectl restart
+preun:
+# 每行命令以TAB开始,卸载包前执行命令
+#	sudo apachectl restart
+postun:
+# 每行命令以TAB开始,卸载包后前执行命令
+#	sudo apachectl restart
+post:
+# 每行命令以TAB开始,删除目录机上的.svn目录，安装包后执行
+# 注意find命令后面的路径必须为目录机上的全路径，不能用其他变量替换全路径
+#	find /usr/lib/php/pear/tbs/apps/customhtml  -type d -name ".svn"|xargs rm -rf	
+#	find /var/www/htdocs/apps/customhtml  -type d -name ".svn"|xargs rm -rf	
+
+# dev环境下执行的shell命令
+dev:
+#	echo "dev"
+
+# tst环境下执行的shell命令
+tst:
+#	echo "tst"
+
+# prd环境下执行的shell命令
+prd:
+#	echo "prd"
+
+
+# 打包日志，同rpm中的%changelog
+changelog:
+# 每行日志以TAB开始
+	* Wed May 20 2009 changjing.xu  %{Version}
+	- this is test
+

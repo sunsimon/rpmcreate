@@ -1,0 +1,10 @@
+Summary: A test spec file for build rpm package
+Name: php_rpm_test
+Version: 1.0.1
+Release: 1
+License: Commercial
+Group: Development/Languages
+Source0: %{name}-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-root
+Requires: php >= 5.2
+

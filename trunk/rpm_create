@@ -1,0 +1,265 @@
+#!/bin/bash
+# rpm package manage
+# user ugg.xchj@gmail.com
+# more help 
+# https://code.google.com/p/rpmcreate/
+
+# Trap the INT signal (ctrl-c, for example)
+trap trapint 2
+
+TPM_CREATE_VERSION="1.0.0"
+
+#############################################################################
+                           # Function definitions #
+                           ########################
+
+# Enable alias expansion in command substitution
+shopt -s expand_aliases 
+ 
+# Vefify that we have gettext available
+gettext "Bye." &> /dev/null
+ 
+if [ $? -gt 0 ]; then
+   alias ck_gettext="echo -e"
+else
+   alias ck_gettext="gettext -s --"
+fi
+
+## gettext echo with newline at the end
+function echog() {
+   local format="$1\n"
+   shift
+   printf -- "$(ck_gettext "$format")" "$@" >&2
+}
+ 
+## gettext echo with NO newline at the end
+function echogn() {
+   local format="$1"
+   shift
+   printf -- "$(ck_gettext "$format")" "$@" >&2
+}
+
+function okfail () {
+ if [ $? -gt 0 ]; then
+    echog ' FAILED!'
+    return 1
+ else
+    echog 'OK'
+    return 0
+ fi
+}
+
+function restore_backup {
+ if [ $? -eq 0 ]; then
+    echogn "Restoring overwritten files from backup..."
+    okfail
+    echo
+ fi
+} 
+
+function trapint {
+ echo
+ echo
+ echog "*** SIGINT received ***"
+ cleanup
+}
+
+function cleanup {
+ echo
+ restore_backup
+
+# 清理垃圾信息
+ 
+ true; okfail
+ echo
+ echog "Bye."
+ echo
+ exit 1
+}
+
+function ckversion {
+   echo
+   echog "rpm $TPM_VERSION, Copyright 2009 taobao plaform"
+}
+
+function usage() { 
+   echo
+   echog "Usage: rpm_create [options]   "
+   echog "   options:"
+   echog "     -citb  filename           citb file"
+   echog "     -spec -[ba] filename      spec file"
+   echog "*About rpm*"
+   echo
+   echog "--help, -h                     Show this message"
+   echog "--copyright                    Show Copyright information"
+   echog "--version                      Show version information"
+   echo
+   exit 1
+}
+
+function help_notice() { 
+echo
+echog "Use --help or -h to get more information"
+echog "Version: $TPM_CREATE_VERSION"
+echo
+exit 1 
+ 
+}
+
+# 创建citb文件操作
+function create_citb_file()
+{
+   while [ -n "$1" ]; do 
+      # 判断上传格式是否正确
+      if ! echo $1|grep '\.citb'>/dev/null
+      then
+         echo 
+         echog "==========================ERROR==========================="
+         echog " $1 is not a citb file......"
+         echog " you must create a citb file"
+         echog "   eg."
+         echog "     rpm_create -citb xxx.citb" 
+         echog "==========================ERROR==========================="
+         echo 
+         shift
+         continue
+      fi
+  
+      # 获取文件名称
+      filename=`echo $1|sed 's/^.*\///g'`
+
+      # 获取文件的目录
+      filepath=`echo $1|sed "s/$filename$//g"` 
+      if [ -z $filepaht ] ; then
+         filepath="./"
+      fi
+   
+      # 执行打包操作
+      sudo checkinstall --citb=$filepath"/"$filename
+
+      if [ $? -ne 0 ]; then
+         echo 
+         echog "==========================ERROR==========================="
+         echog "    $filename create failture..."
+         echog "==========================ERROR==========================="
+         echo 
+         exit $?;
+      else 
+         echo 
+         echog "==========================OK==========================="
+         echog "    $filename create OK..."
+         echog "==========================OK==========================="
+         echo 
+      fi
+      shift
+   done
+
+}
+
+# 创建spec文件操作
+function create_spec_file()
+{
+   # 判断打什么样的包 
+   op="-ba" 
+   if ! echo $1|grep '\.spec'>/dev/null
+   then
+	   op=$1
+	   shift
+   fi
+
+   while [ -n "$1" ]; do 
+      # 判断上传格式是否正确
+      if ! echo $1|grep '\.spec'>/dev/null
+      then
+         echo 
+         echog "==========================ERROR==========================="
+         echog " $1 is not a spec file......"
+         echog " you must create a spec file"
+         echog "   eg."
+         echog "     rpm_create -spec -bb xxx.spec" 
+         echog "==========================ERROR==========================="
+         echo 
+         shift
+         continue
+      fi
+  
+      # 获取文件名称
+      filename=`echo $1|sed 's/^.*\///g'`
+
+      # 获取文件的目录
+      filepath=`echo $1|sed "s/$filename$//g"` 
+      if [ -z $filepaht ] ; then
+         filepath="./"
+      fi
+   
+      # 执行打包操作
+      rpmbuild $op $filepath"/"$filename
+
+      if [ $? -ne 0 ]; then
+         echo 
+         echog "==========================ERROR==========================="
+         echog "    $filename create failture..."
+         echog "==========================ERROR==========================="
+         echo 
+         exit $?;
+      else 
+         echo 
+         echog "==========================OK==========================="
+         echog "    $filename create OK..."
+         echog "==========================OK==========================="
+         echo 
+      fi
+      shift
+   done
+
+}
+
+
+#############################################################################
+                         # end Function definitions #
+                         ############################
+
+# Arguments parsing
+
+CKNAME=`basename "$0"`
+PARAMS=`getopt -a -n $CKNAME -o +d:DA:t:RShHy -l version::,copyright,citb:,spec:,self-update, -- "$@"`
+
+[ $? -gt 0 ] && help_notice
+
+#echo $params;
+eval set -- $PARAMS
+#sudo more /var/log/yum.log
+
+while [ "$1" != "--" ]; do
+   case "$1" in
+      -h|-H|--help)
+         usage;;
+      --citb)
+	     shift 1
+         one=$1
+         shift 2
+         create_citb_file $one $@
+         exit 0;
+         ;;
+      --spec)
+	     shift 1
+         one=$1
+         shift 2
+         create_spec_file $one $@
+         exit 0;
+         ;;
+
+   esac
+   shift
+done
+
+# 默认按citb格式处理
+shift
+if [ -n $1 ]; then
+	create_citb_file $@
+	exit
+fi
+
+usage
+
+
