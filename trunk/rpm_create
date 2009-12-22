@@ -1,8 +1,12 @@
 #!/bin/bash
+############################################################################
 # rpm package manage
 # user ugg.xchj@gmail.com
 # more help 
 # https://code.google.com/p/rpmcreate/
+# 说明: tpm_create 是对checkinstall的一层封装，通过这层封装可以很好的对
+#       citb格式文件进行批量打包操作
+############################################################################
 
 # Trap the INT signal (ctrl-c, for example)
 trap trapint 2

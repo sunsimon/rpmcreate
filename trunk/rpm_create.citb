@@ -1,3 +1,12 @@
+##############################################################
+# author: ugg
+# mail: ugg.xchj@gmail.com
+# URL: http://code.google.com/p/rpmcreate/
+# 说明: citb格式的文件必须使用rpm_create打包，所以如果使用本
+#       如果是svn出来本文件，并且没有安装rpm_create包，可以使用
+#       [sudo ] checkinstall --citb rpm_create.citb
+#       进行打包即可
+##############################################################
 Name: rpm_create
 Version: 1.7.5
 Release: 9
