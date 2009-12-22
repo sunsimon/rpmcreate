@@ -1,4 +1,4 @@
-Name: checkinstall_tb
+Name: rpm_create
 Version: 1.7.5
 Release: 9
 
@@ -31,6 +31,7 @@ install: all
 	
 	mkdir -p $(BINDIR)
 	install checkinstall makepak $(BINDIR)
+	install rpm_create $(BINDIR)
 	for file in locale/*.mo ; do \
 		LANG=`echo $$file | sed -e 's|locale/checkinstall-||' \
 			-e 's|\.mo||'` && \
@@ -60,4 +61,4 @@ install: all
 		echo; \
 	fi
 post:
-	find usr/doc/checkinstall_tb  -type d -name ".svn"|xargs rm -rf   
+	find usr/doc/checkinstall  -type d -name ".svn"|xargs rm -rf   
