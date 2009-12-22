@@ -1,3 +1,5 @@
+rpm_create, author ugg,mailto ugg.xchj@gmail.com
+rpm_create use checkinstall 
 CheckInstall installations tracker, version 1.6.1
 
 CheckInstall  keeps  track of all the files created  or
