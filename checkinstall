@@ -793,6 +793,9 @@ shift
 # Default architecture type
 ! [ "$ARCHITECTURE" ] && ARCHITECTURE=""
 
+# Default architecture type
+! [ "$AUTOREQPROV" ] && AUTOREQPROV="yes"
+
 # Default package type
 ! [ "$INSTYPE" ] && INSTYPE=""
 
@@ -1188,6 +1191,7 @@ if [ -f "$CITB_PATH" ]; then
 	REQUIRES=`getparameterTB "^[Rr]equires"`
 	PACKAGER=`getparameterTB "^[Pr]ackager"`
 	ARCHITECTURE=`getparameterTB "^[Aa]rchitecture"`
+	AUTOREQPROV=`getparameterTB "^[Aa]uto[Rr]eq[Pp]rov"`
 	SOURCE=`getparameterTB "^[Ss]ource"`
 	ALTSOURCE=`getparameterTB "^[Aa]lternate"`
 	if [ -z "$PACKAGER" ] ; then
@@ -1265,8 +1269,8 @@ fi
       ! [ "$PKG_GROUP" ] && [ "$CK_REDHAT" ] && PKG_GROUP="Applications/System"
       ! [ "$PKG_GROUP" ] && [ "$CK_DEBIAN" ] && PKG_GROUP="checkinstall"
       ! [ "$PKG_GROUP" ] && [ "$CK_SLACKWARE" ] && PKG_GROUP="Applications/System"
-
       ! [ "$ARCHITECTURE" ] && ARCHITECTURE="i386"
+      ! [ "$AUTOREQPROV" ] && AUTOREQPROV="yes"
       ! [ "$SOURCE" ] && SOURCE="$PKG_BASENAME"
       ! [ "$ALTSOURCE" ] && ALTSOURCE=""
       ! [ "$PROVIDES" ] && PROVIDES="$NAME"
@@ -1309,6 +1313,7 @@ fi
       echog "8 -  Source location: [ %s ]" "$SOURCE"
       echog "9 -  Alternate source location: [ %s ]" "$ALTSOURCE"
       echog "10 - Requires: [ %s ]" "$REQUIRES"
+      echog "11 -  AutoReqProv: [ %s ]" "$AUTOREQPROV"
       [ "$CK_REDHAT" ] && echog "11 - Provides: [ %s ]" "$PROVIDES"
 
 
@@ -2244,6 +2249,7 @@ Packager: $PACKAGER
 Group:     $PKG_GROUP          
 BuildRoot: $BROOTPATH
 Provides:  $PROVIDES
+AutoReqProv: $AUTOREQPROV
 Requires:  $REQUIRES,/bin/sh
 
 %description
@@ -2653,6 +2659,7 @@ Section: $PKG_GROUP
 Installed-Size: `du -s $BUILD_DIR | awk '{print $1}'`
 Maintainer: $MAINTAINER
 Architecture: $ARCHITECTURE
+AutoReqProv: $AUTOREQPROV
 Version: ${VERSION}-${RELEASE}
 Depends: $REQUIRES
 Description: $SUMMARY

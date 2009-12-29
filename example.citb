@@ -1,8 +1,3 @@
-###############################################################
-# author: ugg
-# mail: ugg.xchj@gmail.com
-# url: http://code.google.com/p/rpmcreate/
-###############################################################
 # 包的名称
 Name: tpm_create_test
 # 包的版本信息
@@ -12,13 +7,15 @@ Release: 1
 # 依赖包
 Requires: php , httpd
 # 创建者
-Packager: ugg
+Packager: guangzhao
 # 摘要信息
-Summary: by ugg test
+Summary: by guangzhao test
 # 版权
-copyright: company
+copyright: taobao
 # 指定包目标环境平台
 Architecture: noarch
+# 是否指定包依赖关系
+AutoReqProv: yes
 
 PEARPATH=/usr/lib/php/pear/tbs/apps/customhtml
 HTDOCSPATH=/var/www/htdocs/apps/customhtml
